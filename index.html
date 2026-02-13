@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: #ffffff;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            color: #2d2d2d;
+        }
+
+        /* ── Floating Hearts Background ── */
+        .hearts-bg {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 0;
+            overflow: hidden;
+        }
+        .hearts-bg .heart {
+            position: absolute;
+            bottom: -60px;
+            font-size: 20px;
+            animation: floatUp linear infinite;
+            opacity: 0.35;
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.7; }
+            50%  { opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg) scale(0.5); opacity: 0; }
+        }
+
+        /* ── Sections ── */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+        }
+
+        /* ── HERO SECTION ── */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Video Background */
+        .hero-video-wrap {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+        .hero-video-wrap video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* Fallback image if video doesn't load */
+        .hero-video-wrap .hero-fallback-img {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Smooth bottom transition from hero video to white background */
+        #hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, #ffffff);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Scroll CTA at bottom of hero */
+        .hero-scroll-cta {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s 1s forwards;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .hero-scroll-cta:hover {
+            transform: translateX(-50%) translateY(-3px);
+        }
+        .hero-scroll-cta span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+        .hero-scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid rgba(255,255,255,0.7);
+            border-bottom: 2px solid rgba(255,255,255,0.7);
+            transform: rotate(45deg);
+            animation: bounce 2s 2s infinite;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 8px rgba(255, 64, 129, 0.4)); }
+            to   { filter: drop-shadow(0 0 20px rgba(255, 64, 129, 0.8)); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: rotate(45deg) translateY(0); }
+            50%      { transform: rotate(45deg) translateY(8px); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+
+
+        /* ── ENVELOPE ── */
+        #envelope-section {
+            perspective: 800px;
+        }
+        .envelope-wrapper {
+            cursor: pointer;
+            position: relative;
+            width: 300px; height: 200px;
+            transition: transform 0.3s;
+        }
+        .envelope-wrapper:hover { transform: scale(1.05); }
+        .envelope {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(145deg, #495057 0%, #343a40 50%, #212529 100%);
+            border: 2px solid #343a40;
+            border-bottom: none;
+            clip-path: polygon(0 0, 50% 70%, 100% 0);
+            transition: transform 0.6s ease;
+            transform-origin: top center;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        /* Add envelope body outline */
+        .envelope::after {
+            content: '';
+            position: absolute;
+            top: 25%; left: 0; right: 0; bottom: 0;
+            border: 2px solid #6c757d;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            background: transparent;
+            z-index: 1;
+        }
+        .envelope.opened::before {
+            transform: rotateX(180deg);
+        }
+        .envelope-heart {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            z-index: 1;
+            animation: pulse 1.5s infinite;
+            color: #e91e63;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50%      { transform: translate(-50%, -50%) scale(1.2); }
+        }
+        .envelope-label {
+            margin-top: 1.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: #999;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .envelope.opened + .envelope-label { opacity: 0; }
+
+        /* ── LETTER ── */
+        #letter-section {
+            display: none;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+        #letter-section.visible {
+            display: flex;
+            animation: fadeInUp 1s forwards;
+        }
+        .letter {
+            background: #fff;
+            color: #333;
+            max-width: 550px;
+            width: 90%;
+            padding: 3rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            position: relative;
+            text-align: center;
+            margin: 0 auto;
+        }
+        .letter::before {
+            content: '💌';
+            position: absolute;
+            top: -20px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+        }
+        .letter h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #e91e63;
+            margin-bottom: 1.5rem;
+        }
+        .letter p {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: #555;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        .letter .signature {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e91e63;
+            margin-top: 1.5rem;
+        }
+
+        /* ── QUESTION ── */
+        #question-section {
+            text-align: center;
+        }
+        .before-gif {
+            width: 480px;
+            border-radius: 32px;
+            margin-bottom: 4rem;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+        }
+        #question-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(3.2rem, 10vw, 5rem);
+            font-weight: 600;
+            color: #2d2d2d;
+            margin-bottom: 4rem;
+        }
+        .btn-container {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 160px;
+            position: relative;
+        }
+        .btn-yes, .btn-no {
+            padding: 28px 88px;
+            border: none;
+            border-radius: 100px;
+            font-size: 2rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+        .btn-yes {
+            background: #e91e63;
+            color: white;
+            box-shadow: 0 8px 32px rgba(233, 30, 99, 0.3);
+        }
+        .btn-yes:hover {
+            transform: scale(1.04);
+            box-shadow: 0 12px 48px rgba(233, 30, 99, 0.4);
+        }
+        .btn-no {
+            background: #f5f5f5;
+            color: #888;
+            border: 1px solid #e0e0e0;
+            box-shadow: none;
+            position: relative;
+        }
+
+        /* ── MEMORY VIDEO ── */
+        #memory-video {
+            display: none; /* Hidden by default until YES is clicked, or remove this to always show */
+        }
+        
+        /* ── CELEBRATION ── */
+        #celebration {
+            display: none;
+            text-align: center;
+        }
+        #celebration.visible {
+            display: flex;
+            animation: fadeInUp 0.8s forwards;
+        }
+        #celebration h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(4rem, 12vw, 6rem);
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 2rem;
+        }
+        #celebration p {
+            font-size: 2.1rem;
+            color: #666;
+            max-width: 1000px;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+        .celebration-gif {
+            width: 480px;
+            border-radius: 32px;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+        }
+        .big-heart {
+            font-size: 12rem;
+            animation: heartBeat 1s infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes heartBeat {
+            0%   { transform: scale(1); }
+            15%  { transform: scale(1.25); }
+            30%  { transform: scale(1); }
+            45%  { transform: scale(1.15); }
+            60%  { transform: scale(1); }
+        }
+
+        /* ── Confetti ── */
+        .confetti-piece {
+            position: fixed;
+            width: 10px; height: 10px;
+            top: -20px;
+            z-index: 100;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(0) rotateZ(0); opacity: 1; }
+            100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+        }
+
+        /* ── Sparkle cursor ── */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 14px;
+            z-index: 999;
+            animation: sparkleFade 0.8s forwards;
+        }
+        @keyframes sparkleFade {
+            0%   { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0) translateY(-30px); }
+        }
+
+        /* ── Photo Slideshow ── */
+        .slideshow-note {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: #fafafa;
+            border: 1px dashed #e0e0e0;
+            border-radius: 12px;
+            color: #999;
+            font-size: 0.85rem;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* ── Music Toggle ── */
+        .music-btn {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e0e0e0;
+            color: #e91e63;
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .music-btn:hover {
+            background: #fff;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* ── Timeline ── */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+            width: 90%;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.6s ease;
+        }
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .timeline-dot {
+            width: 12px; height: 12px;
+            background: #e91e63;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: none;
+        }
+        .timeline-text {
+            background: #fafafa;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #555;
+            border-left: 3px solid #e91e63;
+            font-weight: 300;
+        }
+        #reasons h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 600;
+            color: #2d2d2d;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 480px) {
+            .letter { padding: 2rem 1.5rem; }
+            .btn-yes, .btn-no { padding: 12px 30px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating Hearts Background -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- Music Toggle -->
+<button class="music-btn" id="musicBtn" title="Toggle Music">🎵</button>
+
+<!-- ===== HERO SECTION ===== -->
+<section id="hero">
+    <!-- Video Background -->
+    <div class="hero-video-wrap">
+        <video autoplay muted loop playsinline poster="Assets/hero page.jpg">
+            <source src="Assets/Hero page video.mp4" type="video/mp4">
+        </video>
+        <img class="hero-fallback-img" src="Assets/hero page.jpg" alt="Valentine's Day">
+    </div>
+
+    <!-- Scroll CTA -->
+    <div class="hero-scroll-cta" onclick="document.getElementById('envelope-section').scrollIntoView({behavior:'smooth'})">
+        <span>Scroll to explore</span>
+        <div class="hero-scroll-arrow"></div>
+    </div>
+</section>
+
+<!-- ===== SECTION 2: ENVELOPE ===== -->
+<div class="section" id="envelope-section">
+    <div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
+        <div class="envelope" id="envelope">
+            <span class="envelope-heart">💖</span>
+        </div>
+    </div>
+    <p class="envelope-label" id="envelopeLabel">Tap to open my letter to you</p>
+</div>
+
+<!-- ===== SECTION 3: LOVE LETTER ===== -->
+<div class="section" id="letter-section">
+    <div class="letter">
+        <h2>My Dear चिमुकली ❤️,</h2>
+        <p>Every moment with you feels like a beautiful dream. You have this incredible way of making the ordinary feel extraordinary, and you've made my world so much brighter just by being in it.</p>
+        <p>Life with you is better than I ever imagined. You are my favorite hello and my hardest goodbye. I chose you then, and I’ll keep choosing you, over and over again.</p>
+        <p>Thank you for being my person. I love you more than words can say. 💖</p>
+        <div class="signature">Always Yours,<br>उकडीचा मोदक</div>
+    </div>
+</div>
+
+<!-- ===== SECTION 4: MEMORY VIDEO ===== -->
+<!-- (Moved below Celebration Section) -->
+
+<!-- ===== SECTION 5: THE QUESTION ===== -->
+<div class="section" id="question-section">
+    <img src="Assets/before.gif" alt="" class="before-gif">
+    <h2>Do You Love Me? 🥺</h2>
+    <div class="btn-container" id="btnContainer">
+        <button class="btn-yes" onclick="sayYes()">Yes! 💖</button>
+        <button class="btn-no" id="noBtn" onmouseover="runAway()" onclick="runAway()">No</button>
+    </div>
+</div>
+
+<!-- ===== SECTION 6: CELEBRATION ===== -->
+<div class="section" id="celebration">
+    <img src="Assets/after.gif" alt="" class="celebration-gif">
+    <h2>I Knew It!</h2>
+    <p>You just made me the happiest person alive! I love you to the moon and back, forever and always. 🌙✨</p>
+    <div class="slideshow-note">
+        💡 <em>Tip: Replace the letter text and reasons with your own personal messages to make it even more special!</em>
+    </div>
+</div>
+
+<!-- ===== SECTION 7: MEMORY VIDEO ===== -->
+<div class="section" id="memory-video">
+    <div style="width: 95%; max-width: 1500px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 80px rgba(0,0,0,0.15);">
+        <video autoplay muted loop playsinline style="width: 100%; display: block;">
+            <source src="Assets/funvideo.mp4" type="video/mp4">
+        </video>
+    </div>
+</div>
+
+<script>
+    // ── Video Fallback ──
+    const heroVideo = document.querySelector('.hero-video-wrap video');
+    if (heroVideo) {
+        heroVideo.addEventListener('error', () => {
+            heroVideo.style.display = 'none';
+            document.querySelector('.hero-fallback-img').style.display = 'block';
+        });
+    }
+
+    // ── Floating Hearts ──
+    const heartsBg = document.getElementById('heartsBg');
+    const heartEmojis = ['❤️', '💖', '💕', '💗', '💓', '💘', '💝', '🩷'];
+    function createHeart() {
+        const heart = document.createElement('span');
+        heart.classList.add('heart');
+        heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
+        heart.style.animationDuration = (Math.random() * 6 + 6) + 's';
+        heart.style.animationDelay = Math.random() * 2 + 's';
+        heartsBg.appendChild(heart);
+        setTimeout(() => heart.remove(), 14000);
+    }
+    setInterval(createHeart, 400);
+    for (let i = 0; i < 15; i++) setTimeout(createHeart, i * 200);
+
+    // ── Sparkle Cursor ──
+    const sparkles = ['✨', '💖', '⭐', '💕', '🩷'];
+    let lastSparkle = 0;
+    document.addEventListener('mousemove', (e) => {
+        if (Date.now() - lastSparkle < 100) return;
+        lastSparkle = Date.now();
+        const s = document.createElement('span');
+        s.classList.add('sparkle');
+        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        s.style.left = e.clientX + 'px';
+        s.style.top = e.clientY + 'px';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+    });
+
+    // ── Envelope ──
+    let envelopeOpened = false;
+    function openEnvelope() {
+        if (envelopeOpened) return;
+        envelopeOpened = true;
+        document.getElementById('envelope').classList.add('opened');
+        document.getElementById('envelopeLabel').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('letter-section').classList.add('visible');
+            document.getElementById('letter-section').scrollIntoView({ behavior: 'smooth' });
+        }, 800);
+    }
+
+    // ── Timeline Scroll Animation ──
+    // (Removed since timeline section is replaced by video)
+
+    // ── No Button Runs Away ──
+    let noClickCount = 0;
+    const noBtnMessages = ['No', 'Are you sure?', 'Really?? 🥺', 'Think again!', 'Please? 💔', '😭😭😭'];
+    function runAway() {
+        const btn = document.getElementById('noBtn');
+        const container = document.getElementById('btnContainer');
+        const rect = container.getBoundingClientRect();
+
+        noClickCount++;
+        btn.textContent = noBtnMessages[Math.min(noClickCount, noBtnMessages.length - 1)];
+
+        // Make it smaller each time
+        const scale = Math.max(0.4, 1 - noClickCount * 0.1);
+        btn.style.transform = `scale(${scale})`;
+
+        // Move to random position
+        const maxX = rect.width - btn.offsetWidth;
+        const maxY = 400;
+        const randX = (Math.random() - 0.5) * maxX;
+        const randY = (Math.random() - 0.5) * maxY;
+        btn.style.position = 'relative';
+        btn.style.left = randX + 'px';
+        btn.style.top = randY + 'px';
+
+        // Make Yes button bigger
+        const yesBtn = document.querySelector('.btn-yes');
+        const yesScale = 1 + noClickCount * 0.1;
+        yesBtn.style.transform = `scale(${Math.min(yesScale, 1.8)})`;
+
+        if (noClickCount >= 5) {
+            btn.style.display = 'none';
+        }
+    }
+
+    // ── Yes! Celebration ──
+    function sayYes() {
+        document.getElementById('question-section').style.display = 'none';
+        document.getElementById('celebration').classList.add('visible');
+        document.getElementById('celebration').scrollIntoView({ behavior: 'smooth' });
+        
+        // Start music when Yes is clicked
+        if (!musicPlaying) {
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                musicBtn.textContent = '🔇';
+            }).catch(e => console.log('Audio play failed:', e));
+        }
+        
+        // Make the video visible as well since it is part of the celebration flow
+        document.getElementById('memory-video').style.display = 'flex';
+        
+        launchConfetti();
+        // Extra hearts burst
+        for (let i = 0; i < 30; i++) setTimeout(createHeart, i * 80);
+    }
+
+    // ── Confetti ──
+    function launchConfetti() {
+        const colors = ['#ff4081', '#ff80ab', '#f50057', '#ff6090', '#ffcdd2', '#fff', '#ffd54f', '#ff6f00'];
+        for (let i = 0; i < 120; i++) {
+            setTimeout(() => {
+                const piece = document.createElement('div');
+                piece.classList.add('confetti-piece');
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.width = (Math.random() * 16 + 10) + 'px';
+                piece.style.height = (Math.random() * 16 + 10) + 'px';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 4000);
+            }, i * 30);
+        }
+    }
+
+    // ── Music Button ──
+    const musicBtn = document.getElementById('musicBtn');
+    let musicPlaying = false;
+    const bgMusic = new Audio('Assets/music.mp3');
+    bgMusic.loop = true;
+
+    musicBtn.addEventListener('click', () => {
+        musicPlaying = !musicPlaying;
+        if (musicPlaying) {
+            bgMusic.play().catch(e => console.log('Audio play failed:', e));
+            musicBtn.textContent = '🔇';
+        } else {
+            bgMusic.pause();
+            musicBtn.textContent = '🎵';
+        }
+    });
+
+    // ── Smooth Scroll ──
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+
+</body>
+</html>
